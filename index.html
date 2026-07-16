@@ -1029,7 +1029,235 @@
         </ul>
         <div class="copy">К◎лесо Прибыли © 2026</div>
       </div>
-    </footer>
+</footer>
+
+<script>
+const CARS = [
+  { brand: 'Lada',        model: 'Vesta',   year: 2022, engine: '1.6 МКПП',  price: 1_350_000, market: 1_480_000, below: 9,  pi: 78, li: 'fly',  liText: '⚡ Улетает' },
+  { brand: 'Lada',        model: 'Granta',  year: 2023, engine: '1.6 МКПП',  price: 820_000,   market: 900_000,   below: 9,  pi: 75, li: 'fly',  liText: '⚡ Улетает' },
+  { brand: 'Kia',         model: 'Rio',     year: 2020, engine: '1.6 АКПП',  price: 1_180_000, market: 1_290_000, below: 9,  pi: 72, li: 'hot',  liText: '🔥 Ликвид' },
+  { brand: 'Hyundai',     model: 'Solaris', year: 2020, engine: '1.6 АКПП',  price: 1_150_000, market: 1_260_000, below: 9,  pi: 70, li: 'hot',  liText: '🔥 Ликвид' },
+  { brand: 'Volkswagen', model: 'Polo',    year: 2021, engine: '1.4 TSI',   price: 1_480_000, market: 1_620_000, below: 9,  pi: 68, li: 'ok',   liText: '✅ Нормально' },
+  { brand: 'Toyota',     model: 'Camry',   year: 2019, engine: '2.5 АКПП',  price: 2_180_000, market: 2_420_000, below: 10, pi: 85, li: 'fly',  liText: '⚡ Улетает' },
+  { brand: 'Skoda',      model: 'Octavia', year: 2020, engine: '1.4 TSI',   price: 1_680_000, market: 1_840_000, below: 9,  pi: 71, li: 'ok',   liText: '✅ Нормально' },
+  { brand: 'Renault',    model: 'Logan',   year: 2021, engine: '1.6 МКПП',  price: 880_000,   market: 960_000,   below: 8,  pi: 64, li: 'ok',   liText: '✅ Нормально' },
+  { brand: 'Mazda',      model: 'CX-5',    year: 2020, engine: '2.0 АКПП',  price: 2_350_000, market: 2_580_000, below: 9,  pi: 74, li: 'hot',  liText: '🔥 Ликвид' },
+  { brand: 'Nissan',     model: 'Qashqai', year: 2019, engine: '2.0 CVT',   price: 1_780_000, market: 1_950_000, below: 9,  pi: 67, li: 'ok',   liText: '✅ Нормально' },
+  { brand: 'Toyota',     model: 'RAV4',    year: 2019, engine: '2.0 CVT',   price: 2_480_000, market: 2_720_000, below: 9,  pi: 82, li: 'fly',  liText: '⚡ Улетает' },
+  { brand: 'Chery',      model: 'Tiggo 7 Pro', year: 2023, engine: '1.5 CVT', price: 1_980_000, market: 2_150_000, below: 8, pi: 58, li: 'slow', liText: '🐌 Тяжело' },
+  { brand: 'Geely',      model: 'Coolray',    year: 2023, engine: '1.5 DCT',  price: 2_150_000, market: 2_320_000, below: 7,  pi: 66, li: 'ok',   liText: '✅ Нормально' },
+  { brand: 'Haval',      model: 'Jolion',     year: 2023, engine: '1.5 DCT',  price: 1_980_000, market: 2_180_000, below: 9,  pi: 72, li: 'hot',  liText: '🔥 Ликвид' },
+  { brand: 'Omoda',      model: 'C5',         year: 2024, engine: '1.5 CVT',  price: 2_280_000, market: 2_450_000, below: 7,  pi: 61, li: 'ok',   liText: '✅ Нормально' },
+  { brand: 'Changan',    model: 'CS35 Plus',  year: 2023, engine: '1.4 DCT',  price: 1_780_000, market: 1_920_000, below: 7,  pi: 57, li: 'slow', liText: '🐌 Тяжело' },
+  { brand: 'Kia',        model: 'Seltos',     year: 2021, engine: '1.6 АКПП',  price: 1_780_000, market: 1_950_000, below: 9,  pi: 70, li: 'ok',   liText: '✅ Нормально' },
+  { brand: 'Hyundai',    model: 'Creta',      year: 2021, engine: '1.6 АКПП',  price: 1_680_000, market: 1_850_000, below: 9,  pi: 76, li: 'fly',  liText: '⚡ Улетает' },
+  { brand: 'Toyota',     model: 'Corolla',    year: 2019, engine: '1.6 CVT',   price: 1_680_000, market: 1_840_000, below: 9,  pi: 80, li: 'fly',  liText: '⚡ Улетает' },
+  { brand: 'Mitsubishi', model: 'Outlander',  year: 2018, engine: '2.0 CVT',   price: 1_880_000, market: 2_050_000, below: 8,  pi: 65, li: 'ok',   liText: '✅ Нормально' },
+]
+
+const MODELS = {
+  Lada:        ['Vesta', 'Granta'],
+  Kia:         ['Rio', 'Seltos'],
+  Hyundai:     ['Solaris', 'Creta'],
+  Volkswagen:  ['Polo'],
+  Toyota:      ['Camry', 'RAV4', 'Corolla'],
+  Skoda:       ['Octavia'],
+  Renault:     ['Logan'],
+  Mazda:       ['CX-5'],
+  Nissan:      ['Qashqai'],
+  Chery:       ['Tiggo 7 Pro'],
+  Geely:       ['Coolray'],
+  Haval:       ['Jolion'],
+  Omoda:       ['C5'],
+  Changan:     ['CS35 Plus'],
+  Mitsubishi:  ['Outlander'],
+}
+
+const PER_PAGE = 6
+let shown = PER_PAGE
+let currentSort = 'profit'
+let activeBrand = ''
+let activeModel = ''
+
+const grid = document.getElementById('grid')
+const moreWrap = document.getElementById('pagination')
+const sortSel = document.getElementById('f-sort')
+const fBrand = document.getElementById('f-brand')
+const fModel = document.getElementById('f-model')
+const heroBrand = document.getElementById('brand')
+const heroModel = document.getElementById('model')
+
+const fmt = (n) => n.toLocaleString('ru-RU') + ' ₽'
+const LIQ_CLASS = { fly: 'l-fly', hot: 'l-hot', ok: 'l-ok', slow: 'l-slow' }
+
+function populateModels(selectEl, brand) {
+  const prev = selectEl.value
+  selectEl.innerHTML = '<option value="">Любая</option>'
+  const models = MODELS[brand] || []
+  models.forEach(m => {
+    const o = document.createElement('option')
+    o.value = m
+    o.textContent = m
+    selectEl.appendChild(o)
+  })
+  if (models.includes(prev)) selectEl.value = prev
+}
+
+function getFiltered() {
+  let list = CARS
+  if (activeBrand) list = list.filter(c => c.brand === activeBrand)
+  if (activeModel) list = list.filter(c => c.model === activeModel)
+  return sortCars(list, currentSort)
+}
+
+function sortCars(list, by) {
+  const arr = [...list]
+  if (by === 'profit') arr.sort((a, b) => b.pi - a.pi)
+  else if (by === 'liquidity') {
+    const w = { fly: 4, hot: 3, ok: 2, slow: 1 }
+    arr.sort((a, b) => w[b.li] - w[a.li])
+  } else if (by === 'margin') {
+    arr.sort((a, b) => (b.market - b.price) - (a.market - a.price))
+  }
+  return arr
+}
+
+function renderGrid() {
+  const sorted = getFiltered()
+  const slice = sorted.slice(0, shown)
+
+  if (slice.length === 0) {
+    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--muted-2);">Нет авто под выбранные фильтры</div>`
+    moreWrap.innerHTML = ''
+    return
+  }
+
+  grid.innerHTML = slice.map((c, i) => `
+    <a href="car.html" class="card reveal" style="transition-delay:${(i % PER_PAGE) * 60}ms">
+      <div class="card-photo">
+        <div class="ph"></div>
+        <div class="car-glyph">⌖</div>
+        <span class="badge-below">На ${c.below}% ниже рынка</span>
+        <span class="badge-liquidity ${LIQ_CLASS[c.li]}">${c.liText}</span>
+      </div>
+      <div class="card-body">
+        <div class="card-title">${c.brand} ${c.model}, ${c.year}</div>
+        <div class="card-engine">${c.engine}</div>
+        <div class="card-price">
+          <span class="now">${fmt(c.price)}</span>
+          <span class="market">${fmt(c.market)}</span>
+        </div>
+        <div class="profit-index">
+          <div class="pi-head">
+            <span>Индекс выгодности</span>
+            <span class="val">${c.pi}/100</span>
+          </div>
+          <div class="pi-bar"><div class="pi-fill" style="width:0" data-w="${c.pi}"></div></div>
+        </div>
+        <span class="card-btn">Смотреть анализ</span>
+      </div>
+    </a>
+  `).join('')
+
+  requestAnimationFrame(() => {
+    grid.querySelectorAll('.pi-fill').forEach(el => {
+      el.style.width = el.dataset.w + '%'
+    })
+    observeReveal()
+  })
+
+  renderMore(sorted.length)
+}
+
+function renderMore(total) {
+  if (shown >= total) {
+    moreWrap.innerHTML = `<span class="more-done">Показаны все ${total} вариантов</span>`
+  } else {
+    const rest = total - shown
+    moreWrap.innerHTML = `<button class="more-btn" id="moreBtn">Показать ещё (${rest})</button>`
+    document.getElementById('moreBtn').addEventListener('click', () => {
+      shown += PER_PAGE
+      renderGrid()
+    })
+  }
+}
+
+// Brand → Model dependency
+fBrand.addEventListener('change', () => {
+  activeBrand = fBrand.value
+  populateModels(fModel, activeBrand)
+  activeModel = ''
+  shown = PER_PAGE
+  renderGrid()
+})
+fModel.addEventListener('change', () => {
+  activeModel = fModel.value
+  shown = PER_PAGE
+  renderGrid()
+})
+
+heroBrand.addEventListener('change', () => {
+  populateModels(heroModel, heroBrand.value)
+})
+
+sortSel.addEventListener('change', () => {
+  currentSort = sortSel.value
+  shown = PER_PAGE
+  renderGrid()
+})
+
+document.getElementById('searchForm').addEventListener('submit', (e) => {
+  e.preventDefault()
+  const b = heroBrand.value
+  const m = heroModel.value
+  if (b) {
+    fBrand.value = b
+    populateModels(fModel, b)
+    if (m) fModel.value = m
+    activeBrand = b
+    activeModel = m
+  }
+  shown = PER_PAGE
+  renderGrid()
+  document.getElementById('catalog').scrollIntoView({ behavior: 'smooth', block: 'start' })
+})
+
+const header = document.getElementById('header')
+window.addEventListener('scroll', () => {
+  header.classList.toggle('scrolled', window.scrollY > 20)
+})
+
+const burger = document.getElementById('burger')
+const menu = document.getElementById('menu')
+burger.addEventListener('click', () => {
+  burger.classList.toggle('active')
+  menu.classList.toggle('open')
+})
+menu.querySelectorAll('a').forEach(a =>
+  a.addEventListener('click', () => {
+    burger.classList.remove('active')
+    menu.classList.remove('open')
+  })
+)
+
+let io
+function observeReveal() {
+  if (!io) {
+    io = new IntersectionObserver((entries) => {
+      entries.forEach(en => {
+        if (en.isIntersecting) {
+          en.target.classList.add('visible')
+          io.unobserve(en.target)
+        }
+      })
+    }, { threshold: 0.12 })
+  }
+  document.querySelectorAll('.reveal:not(.visible)').forEach(el => io.observe(el))
+}
+
+renderGrid()
+observeReveal()
+</script>
 
   </body>
 </html>
