@@ -1,0 +1,568 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ИИ-консультант · Колесо Прибыли</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #0D1F1C;
+        --bg-2: #0A1715;
+        --bg-3: #122724;
+        --gold: #C9A96E;
+        --gold-2: #B8975A;
+        --gold-soft: rgba(201, 169, 110, 0.12);
+        --white: #F7F5F0;
+        --muted: #8FA3A0;
+        --muted-2: #5E7370;
+        --line: rgba(201, 169, 110, 0.18);
+        --line-2: rgba(255, 255, 255, 0.06);
+        --green: #4CAF7A;
+        --green-2: #2E8B57;
+        --shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+        --radius: 16px;
+        --max: 880px;
+      }
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      html { scroll-behavior: smooth; }
+      body {
+        font-family: "Inter", system-ui, sans-serif;
+        background: var(--bg); color: var(--white);
+        line-height: 1.6; -webkit-font-smoothing: antialiased;
+        overflow-x: hidden;
+      }
+      h1, h2, h3, h4 {
+        font-family: "Montserrat", sans-serif;
+        line-height: 1.2; font-weight: 700;
+      }
+      a { color: inherit; text-decoration: none; }
+      .container { max-width: var(--max); margin: 0 auto; padding: 0 24px; }
+
+      /* Header */
+      .header {
+        position: sticky; top: 0; z-index: 100;
+        background: rgba(13, 31, 28, 0.72);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border-bottom: 1px solid var(--line-2);
+      }
+      .nav {
+        display: flex; align-items: center; justify-content: space-between;
+        height: 72px;
+      }
+      .logo {
+        display: flex; align-items: center; gap: 10px;
+        font-family: "Montserrat", sans-serif;
+        font-weight: 800; font-size: 18px;
+      }
+      .logo-icon {
+        font-size: 30px; color: var(--gold); line-height: 1;
+        display: inline-block; transform: translateY(-2px);
+      }
+      .logo span { color: var(--gold); }
+      .menu { display: flex; align-items: center; gap: 36px; list-style: none; }
+      .menu a {
+        font-size: 15px; font-weight: 500; color: var(--muted);
+        transition: color 0.2s ease; position: relative;
+      }
+      .menu a:hover { color: var(--white); }
+      .menu a.active { color: var(--gold); }
+      .menu a::after {
+        content: ""; position: absolute; left: 0; bottom: -6px;
+        width: 0; height: 1px; background: var(--gold);
+        transition: width 0.25s ease;
+      }
+      .menu a:hover::after, .menu a.active::after { width: 100%; }
+      .nav-cta {
+        padding: 10px 22px; border: 1px solid var(--gold);
+        border-radius: 999px; color: var(--gold);
+        font-size: 14px; font-weight: 600; transition: all 0.25s ease;
+      }
+      .nav-cta:hover { background: var(--gold); color: var(--bg); }
+      .burger {
+        display: none; flex-direction: column; gap: 5px;
+        background: none; border: none; cursor: pointer; padding: 6px;
+      }
+      .burger span {
+        width: 24px; height: 2px; background: var(--white);
+        transition: all 0.3s ease;
+      }
+      .burger.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+      .burger.active span:nth-child(2) { opacity: 0; }
+      .burger.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+      /* Page head */
+      .page-head { padding: 64px 0 40px; text-align: center; }
+      .page-head .ai-badge {
+        display: inline-flex; align-items: center; gap: 8px;
+        padding: 8px 16px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        font-size: 13px; color: var(--gold);
+        font-weight: 500; margin-bottom: 24px;
+        background: var(--gold-soft);
+      }
+      .page-head .ai-badge .dot {
+        width: 7px; height: 7px; border-radius: 50%;
+        background: var(--green);
+        box-shadow: 0 0 0 4px rgba(76, 175, 122, 0.2);
+        animation: pulse 2s ease-in-out infinite;
+      }
+      @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+      }
+      .page-head h1 {
+        font-size: clamp(32px, 5vw, 48px);
+        font-weight: 800; letter-spacing: -1px; margin-bottom: 14px;
+      }
+      .page-head p {
+        color: var(--muted); font-size: 17px; max-width: 560px;
+        margin: 0 auto;
+      }
+
+      /* Chat area */
+      .chat-card {
+        background: var(--bg-3);
+        border: 1px solid var(--line-2);
+        border-radius: var(--radius);
+        padding: 28px;
+        margin-bottom: 60px;
+        box-shadow: var(--shadow);
+      }
+      .chat-input-wrap {
+        display: flex; gap: 12px; margin-bottom: 20px;
+      }
+      .chat-input {
+        flex: 1;
+        background: var(--bg-2);
+        border: 1px solid var(--line-2);
+        border-radius: 12px;
+        padding: 16px 18px;
+        color: var(--white);
+        font-size: 15px;
+        font-family: inherit;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        outline: none;
+        resize: vertical;
+        min-height: 56px;
+      }
+      .chat-input:focus {
+        border-color: var(--gold);
+        box-shadow: 0 0 0 3px var(--gold-soft);
+      }
+      .chat-input::placeholder { color: var(--muted-2); }
+      .chat-btn {
+        padding: 16px 28px;
+        background: var(--gold);
+        color: var(--bg);
+        border: none;
+        border-radius: 12px;
+        font-family: "Montserrat", sans-serif;
+        font-weight: 700;
+        font-size: 15px;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        white-space: nowrap;
+        align-self: stretch;
+      }
+      .chat-btn:hover {
+        background: var(--gold-2);
+        transform: translateY(-1px);
+        box-shadow: 0 10px 24px rgba(201, 169, 110, 0.3);
+      }
+      .chat-btn:disabled {
+        opacity: 0.6; cursor: not-allowed; transform: none;
+      }
+
+      /* Suggestions */
+      .suggestions {
+        display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 24px;
+      }
+      .sug-chip {
+        padding: 8px 14px;
+        background: var(--bg-2);
+        border: 1px solid var(--line-2);
+        border-radius: 999px;
+        font-size: 13px;
+        color: var(--muted);
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-family: inherit;
+      }
+      .sug-chip:hover {
+        border-color: var(--line);
+        color: var(--gold);
+      }
+
+      /* Response area */
+      .response-area {
+        min-height: 120px;
+      }
+      .response-empty {
+        text-align: center; color: var(--muted-2);
+        padding: 30px 20px; font-size: 15px;
+      }
+      .response-empty .icon {
+        font-size: 40px; margin-bottom: 12px; opacity: 0.4;
+      }
+      .response-loading {
+        display: flex; align-items: center; gap: 12px;
+        padding: 20px; color: var(--gold); font-size: 15px;
+      }
+      .spinner {
+        width: 20px; height: 20px;
+        border: 2px solid var(--line);
+        border-top-color: var(--gold);
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+      }
+      @keyframes spin { to { transform: rotate(360deg); } }
+
+      .response-msg {
+        background: var(--bg-2);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 20px 22px;
+        position: relative;
+      }
+      .response-msg::before {
+        content: "ИИ";
+        position: absolute; top: 14px; right: 18px;
+        font-size: 11px; font-weight: 700; color: var(--gold);
+        background: var(--gold-soft); padding: 4px 10px;
+        border-radius: 999px; letter-spacing: 0.5px;
+      }
+      .response-msg .ai-title {
+        font-family: "Montserrat", sans-serif;
+        font-size: 16px; font-weight: 600; margin-bottom: 12px;
+      }
+      .response-msg p {
+        color: var(--muted); font-size: 15px; margin-bottom: 10px;
+      }
+      .response-msg p .hl { color: var(--white); font-weight: 500; }
+      .response-msg ul {
+        margin: 10px 0 10px 20px; color: var(--muted); font-size: 15px;
+      }
+      .response-msg ul li { margin-bottom: 6px; }
+      .response-msg ul li strong { color: var(--gold); }
+
+      /* Footer */
+      .footer {
+        border-top: 1px solid var(--line-2);
+        padding: 48px 0 36px; margin-top: 40px;
+      }
+      .footer-inner {
+        display: flex; justify-content: space-between; align-items: center;
+        flex-wrap: wrap; gap: 20px;
+      }
+      .footer .copy { color: var(--muted-2); font-size: 14px; }
+      .footer-links { display: flex; gap: 28px; list-style: none; flex-wrap: wrap; }
+      .footer-links a {
+        color: var(--muted); font-size: 14px; transition: color 0.2s ease;
+      }
+      .footer-links a:hover { color: var(--gold); }
+
+      @media (max-width: 760px) {
+        .menu {
+          position: fixed; top: 72px; left: 0; right: 0;
+          background: var(--bg-2);
+          border-bottom: 1px solid var(--line);
+          flex-direction: column; align-items: flex-start;
+          padding: 24px; gap: 18px;
+          transform: translateY(-130%); transition: transform 0.35s ease;
+        }
+        .menu.open { transform: translateY(0); }
+        .burger { display: flex; }
+        .nav-cta { display: none; }
+        .chat-input-wrap { flex-direction: column; }
+        .chat-btn { align-self: auto; }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <div class="container nav">
+        <a href="index.html" class="logo">
+          <span class="logo-icon">◎</span>
+          Колесо <span>Прибыли</span>
+        </a>
+        <ul class="menu" id="menu">
+          <li><a href="index.html">Главная</a></li>
+          <li><a href="index.html#catalog">Каталог</a></li>
+          <li><a href="calc.html">Калькулятор</a></li>
+          <li><a href="ai.html" class="active">ИИ-консультант</a></li>
+        </ul>
+        <a href="#" class="nav-cta">Войти</a>
+        <button class="burger" id="burger" aria-label="Меню">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </header>
+
+    <div class="container">
+      <div class="page-head">
+        <div class="ai-badge">
+          <span class="dot"></span>
+          ИИ-консультант онлайн
+        </div>
+        <h1>ИИ-консультант по подбору авто</h1>
+        <p>Опиши, что ищешь — бюджет, кузов, пожелания. ИИ подберёт варианты с максимальной выгодой для перепродажи.</p>
+      </div>
+
+      <div class="chat-card">
+        <div class="chat-input-wrap">
+          <textarea
+            id="chatInput"
+            class="chat-input"
+            placeholder="Опиши, что ищешь (бюджет, кузов, пожелания)..."
+            rows="2"
+          ></textarea>
+          <button class="chat-btn" id="chatBtn">Подобрать</button>
+        </div>
+
+        <div class="suggestions">
+          <button class="sug-chip">Кроссовер до 2 млн для перепродажи</button>
+          <button class="sug-chip">Ликвидный седан до 1.5 млн</button>
+          <button class="sug-chip">Toyota или Lexus, бюджет 3 млн</button>
+          <button class="sug-chip">Что выгоднее: BMW X5 или Audi Q7?</button>
+        </div>
+
+        <div class="response-area" id="responseArea">
+          <div class="response-empty">
+            <div class="icon">◎</div>
+            Ответ ИИ появится здесь
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <div class="container footer-inner">
+        <a href="index.html" class="logo">
+          <span class="logo-icon">◎</span>
+          Колесо <span>Прибыли</span>
+        </a>
+        <ul class="footer-links">
+          <li><a href="index.html">Главная</a></li>
+          <li><a href="index.html#catalog">Каталог</a></li>
+          <li><a href="calc.html">Калькулятор</a></li>
+          <li><a href="ai.html">ИИ-консультант</a></li>
+          <li><a href="#">О сервисе</a></li>
+          <li><a href="#">Контакты</a></li>
+        </ul>
+        <div class="copy">К◎лесо Прибыли © 2026</div>
+      </div>
+    </footer>
+
+    <script type="module">
+      const input = document.getElementById('chatInput')
+      const btn = document.getElementById('chatBtn')
+      const area = document.getElementById('responseArea')
+
+      const CARS = [
+        { brand: 'Lada',        model: 'Vesta',          year: 2022, engine: '1.6 МКПП',  price: 1_350_000, market: 1_480_000, pi: 78, li: '⚡ Улетает',   body: 'седан' },
+        { brand: 'Lada',        model: 'Granta',         year: 2023, engine: '1.6 МКПП',  price: 820_000,   market: 900_000,   pi: 75, li: '⚡ Улетает',   body: 'седан' },
+        { brand: 'Kia',         model: 'Rio',            year: 2020, engine: '1.6 АКПП',  price: 1_180_000, market: 1_290_000, pi: 72, li: '🔥 Ликвид',     body: 'седан' },
+        { brand: 'Hyundai',     model: 'Solaris',        year: 2020, engine: '1.6 АКПП',  price: 1_150_000, market: 1_260_000, pi: 70, li: '🔥 Ликвид',     body: 'седан' },
+        { brand: 'Volkswagen',  model: 'Polo',           year: 2021, engine: '1.4 TSI',   price: 1_480_000, market: 1_620_000, pi: 68, li: '✅ Нормально',  body: 'седан' },
+        { brand: 'Toyota',      model: 'Camry',          year: 2019, engine: '2.5 АКПП',  price: 2_180_000, market: 2_420_000, pi: 85, li: '⚡ Улетает',   body: 'седан' },
+        { brand: 'Skoda',       model: 'Octavia',        year: 2020, engine: '1.4 TSI',   price: 1_680_000, market: 1_840_000, pi: 71, li: '✅ Нормально',  body: 'лифтбек' },
+        { brand: 'Renault',     model: 'Logan',          year: 2021, engine: '1.6 МКПП',  price: 880_000,   market: 960_000,   pi: 64, li: '✅ Нормально',  body: 'седан' },
+        { brand: 'Mazda',       model: 'CX-5',           year: 2020, engine: '2.0 АКПП',  price: 2_350_000, market: 2_580_000, pi: 74, li: '🔥 Ликвид',     body: 'кроссовер' },
+        { brand: 'Nissan',      model: 'Qashqai',        year: 2019, engine: '2.0 CVT',   price: 1_780_000, market: 1_950_000, pi: 67, li: '✅ Нормально',  body: 'кроссовер' },
+        { brand: 'Toyota',      model: 'RAV4',           year: 2019, engine: '2.0 CVT',   price: 2_480_000, market: 2_720_000, pi: 82, li: '⚡ Улетает',   body: 'кроссовер' },
+        { brand: 'Chery',       model: 'Tiggo 7 Pro',    year: 2023, engine: '1.5 CVT',   price: 1_980_000, market: 2_150_000, pi: 58, li: '🐌 Тяжело',    body: 'кроссовер' },
+        { brand: 'Geely',       model: 'Coolray',        year: 2023, engine: '1.5 DCT',   price: 2_150_000, market: 2_320_000, pi: 66, li: '✅ Нормально',  body: 'кроссовер' },
+        { brand: 'Haval',       model: 'Jolion',         year: 2023, engine: '1.5 DCT',   price: 1_980_000, market: 2_180_000, pi: 72, li: '🔥 Ликвид',     body: 'кроссовер' },
+        { brand: 'Omoda',       model: 'C5',             year: 2024, engine: '1.5 CVT',   price: 2_280_000, market: 2_450_000, pi: 61, li: '✅ Нормально',  body: 'кроссовер' },
+        { brand: 'Changan',     model: 'CS35 Plus',     year: 2023, engine: '1.4 DCT',   price: 1_780_000, market: 1_920_000, pi: 57, li: '🐌 Тяжело',    body: 'кроссовер' },
+        { brand: 'Kia',         model: 'Seltos',         year: 2021, engine: '1.6 АКПП',  price: 1_780_000, market: 1_950_000, pi: 70, li: '✅ Нормально',  body: 'кроссовер' },
+        { brand: 'Hyundai',     model: 'Creta',          year: 2021, engine: '1.6 АКПП',  price: 1_680_000, market: 1_850_000, pi: 76, li: '⚡ Улетает',   body: 'кроссовер' },
+        { brand: 'Toyota',      model: 'Corolla',        year: 2019, engine: '1.6 CVT',    price: 1_680_000, market: 1_840_000, pi: 80, li: '⚡ Улетает',   body: 'седан' },
+        { brand: 'Mitsubishi',  model: 'Outlander',      year: 2018, engine: '2.0 CVT',   price: 1_880_000, market: 2_050_000, pi: 65, li: '✅ Нормально',  body: 'внедорожник' },
+      ]
+
+      const fmt = (n) => n.toLocaleString('ru-RU') + ' ₽'
+
+      function parseQuery(q) {
+        const lower = q.toLowerCase()
+        const result = { body: null, budget: null, brand: null, purpose: null, raw: q }
+
+        // Body type
+        const bodyMap = {
+          'седан': 'седан', 'седане': 'седан',
+          'кроссовер': 'кроссовер', 'кроссовере': 'кроссовер', 'кросс': 'кроссовер',
+          'внедорожник': 'внедорожник', 'внедорожнике': 'внедорожник', 'джип': 'внедорожник',
+          'универсал': 'универсал', 'универсале': 'универсал',
+          'лифтбек': 'лифтбек', 'хэтчбек': 'хэтчбек', 'купе': 'купе',
+        }
+        for (const [k, v] of Object.entries(bodyMap)) {
+          if (lower.includes(k)) { result.body = v; break }
+        }
+
+        // Budget
+        const m = lower.match(/(\d[\d\s]*)\s*(млн|миллион|тыс|т\.|р|руб|₽)?/)
+        if (m) {
+          let num = parseInt(m[1].replace(/\s/g, ''), 10)
+          if (m[2] && (m[2].includes('млн') || m[2].includes('миллион'))) num *= 1_000_000
+          else if (m[2] && (m[2].includes('тыс') || m[2].includes('т.'))) num *= 1_000
+          else if (num < 1000) num *= 1_000_000
+          if (num > 100_000) result.budget = num
+        }
+
+        // Brand
+        const brands = ['lada','kia','hyundai','volkswagen','toyota','skoda','renault','mazda','nissan','chery','geely','haval','omoda','changan','mitsubishi']
+        for (const b of brands) {
+          if (lower.includes(b)) { result.brand = b.charAt(0).toUpperCase() + b.slice(1); break }
+        }
+
+        // Purpose
+        if (lower.includes('перепродаж') || lower.includes('перепродать') || lower.includes('навар') || lower.includes('выгод') || lower.includes('прибыль')) {
+          result.purpose = 'перепродажа'
+        } else if (lower.includes('ликвид') || lower.includes('быстро')) {
+          result.purpose = 'ликвидность'
+        }
+
+        return result
+      }
+
+      function isCarRelated(q) {
+        const lower = q.toLowerCase()
+        const keywords = ['авто','машин','кар','седан','кроссовер','внедорожник','купе','универсал','лифтбек',
+          'перепродаж','прибыль','выгод','ликвид','бюджет','марк','модель','toyota','kia','hyundai','lada',
+          'vw','volkswagen','skoda','renault','mazda','nissan','chery','geely','haval','omoda','changan','mitsubishi',
+          'кузов','привод','акпп','мкпп','cvt','робот']
+        return keywords.some(k => lower.includes(k))
+      }
+
+      function pickCars(parsed) {
+        let list = [...CARS]
+        if (parsed.body) list = list.filter(c => c.body === parsed.body)
+        if (parsed.brand) list = list.filter(c => c.brand.toLowerCase() === parsed.brand.toLowerCase())
+        if (parsed.budget) list = list.filter(c => c.price <= parsed.budget)
+        if (parsed.purpose === 'ликвидность') {
+          const w = { '⚡ Улетает': 4, '🔥 Ликвид': 3, '✅ Нормально': 2, '🐌 Тяжело': 1 }
+          list.sort((a, b) => w[b.li] - w[a.li])
+        } else {
+          list.sort((a, b) => b.pi - a.pi)
+        }
+        return list.slice(0, 3)
+      }
+
+      function explainMatch(car, parsed) {
+        const reasons = []
+        if (parsed.body) reasons.push(`кузов «${car.body}» подходит под ваш запрос`)
+        if (parsed.budget) reasons.push(`вписывается в бюджет (${fmt(car.price)} ≤ ${fmt(parsed.budget)})`)
+        if (parsed.purpose === 'ликвидность') reasons.push(`высокая ликвидность (${car.li})`)
+        else reasons.push(`индекс выгодности ${car.pi}/100`)
+        if (car.li === '⚡ Улетает') reasons.push(`уходит быстро (${car.li})`)
+        return reasons.join(', ')
+      }
+
+      function generateResponse(query) {
+        if (!isCarRelated(query)) {
+          return `
+            <div class="response-msg">
+              <div class="ai-title">Не совсем понял запрос</div>
+              <p>Я специализируюсь на подборе авто. Уточните ваш запрос.</p>
+              <p>Например: <span class="hl">«кроссовер до 2 млн для перепродажи»</span> или <span class="hl">«ликвидный седан до 1.5 млн»</span>.</p>
+            </div>
+          `
+        }
+
+        const parsed = parseQuery(query)
+        const picks = pickCars(parsed)
+
+        if (picks.length === 0) {
+          return `
+            <div class="response-msg">
+              <div class="ai-title">Ничего не нашёл</div>
+              <p>Под ваш запрос не нашлось подходящих вариантов. Попробуйте увеличить бюджет или изменить тип кузова.</p>
+            </div>
+          `
+        }
+
+        const filterDesc = []
+        if (parsed.body) filterDesc.push(`кузов: ${parsed.body}`)
+        if (parsed.budget) filterDesc.push(`бюджет до ${fmt(parsed.budget)}`)
+        if (parsed.brand) filterDesc.push(`марка: ${parsed.brand}`)
+        if (parsed.purpose) filterDesc.push(`цель: ${parsed.purpose === 'перепродажа' ? 'перепродажа' : 'ликвидность'}`)
+        const filterText = filterDesc.length ? filterDesc.join(' · ') : 'без ограничений'
+
+        const items = picks.map(c => `
+          <li>
+            <strong>${c.brand} ${c.model}, ${c.year}</strong> — ${fmt(c.price)}, индекс ${c.pi}, ${c.li}.
+            <br><span style="color:var(--muted-2);font-size:13px;">Почему: ${explainMatch(c, parsed)}.</span>
+          </li>
+        `).join('')
+
+        const top = picks[0]
+        return `
+          <div class="response-msg">
+            <div class="ai-title">Подбор под ваш запрос</div>
+            <p>Запрос: <span class="hl">«${query}»</span></p>
+            <p>Фильтры: ${filterText}</p>
+            <p>Подобрал ${picks.length} варианта:</p>
+            <ul>${items}</ul>
+            <p>Рекомендую начать с <span class="hl">${top.brand} ${top.model}</span> — лучший баланс выгоды и скорости продажи.</p>
+          </div>
+        `
+      }
+
+      function submit() {
+        const q = input.value.trim()
+        if (!q) {
+          input.focus()
+          return
+        }
+        btn.disabled = true
+        area.innerHTML = `
+          <div class="response-loading">
+            <div class="spinner"></div>
+            ИИ подбирает варианты...
+          </div>
+        `
+        setTimeout(() => {
+          area.innerHTML = generateResponse(q)
+          btn.disabled = false
+        }, 1600)
+      }
+
+      btn.addEventListener('click', submit)
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault()
+          submit()
+        }
+      })
+
+      document.querySelectorAll('.sug-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+          input.value = chip.textContent
+          submit()
+        })
+      })
+
+      // Burger
+      const burger = document.getElementById('burger')
+      const menu = document.getElementById('menu')
+      burger.addEventListener('click', () => {
+        burger.classList.toggle('active')
+        menu.classList.toggle('open')
+      })
+      menu.querySelectorAll('a').forEach(a =>
+        a.addEventListener('click', () => {
+          burger.classList.remove('active')
+          menu.classList.remove('open')
+        })
+      )
+    </script>
+  </body>
+</html>

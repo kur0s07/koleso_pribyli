@@ -1,0 +1,452 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Калькулятор прибыли · Колесо Прибыли</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #0D1F1C;
+        --bg-2: #0A1715;
+        --bg-3: #122724;
+        --gold: #C9A96E;
+        --gold-2: #B8975A;
+        --gold-soft: rgba(201, 169, 110, 0.12);
+        --white: #F7F5F0;
+        --muted: #8FA3A0;
+        --muted-2: #5E7370;
+        --line: rgba(201, 169, 110, 0.18);
+        --line-2: rgba(255, 255, 255, 0.06);
+        --green: #4CAF7A;
+        --green-2: #2E8B57;
+        --shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+        --radius: 16px;
+        --max: 920px;
+      }
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      html { scroll-behavior: smooth; }
+      body {
+        font-family: "Inter", system-ui, sans-serif;
+        background: var(--bg); color: var(--white);
+        line-height: 1.6; -webkit-font-smoothing: antialiased;
+        overflow-x: hidden;
+      }
+      h1, h2, h3, h4 {
+        font-family: "Montserrat", sans-serif;
+        line-height: 1.2; font-weight: 700;
+      }
+      a { color: inherit; text-decoration: none; }
+      .container { max-width: var(--max); margin: 0 auto; padding: 0 24px; }
+
+      /* Header */
+      .header {
+        position: sticky; top: 0; z-index: 100;
+        background: rgba(13, 31, 28, 0.72);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border-bottom: 1px solid var(--line-2);
+      }
+      .nav {
+        display: flex; align-items: center; justify-content: space-between;
+        height: 72px;
+      }
+      .logo {
+        display: flex; align-items: center; gap: 10px;
+        font-family: "Montserrat", sans-serif;
+        font-weight: 800; font-size: 18px;
+      }
+      .logo-icon {
+        font-size: 30px; color: var(--gold); line-height: 1;
+        display: inline-block; transform: translateY(-2px);
+      }
+      .logo span { color: var(--gold); }
+      .menu { display: flex; align-items: center; gap: 36px; list-style: none; }
+      .menu a {
+        font-size: 15px; font-weight: 500; color: var(--muted);
+        transition: color 0.2s ease; position: relative;
+      }
+      .menu a:hover { color: var(--white); }
+      .menu a.active { color: var(--gold); }
+      .menu a::after {
+        content: ""; position: absolute; left: 0; bottom: -6px;
+        width: 0; height: 1px; background: var(--gold);
+        transition: width 0.25s ease;
+      }
+      .menu a:hover::after, .menu a.active::after { width: 100%; }
+      .nav-cta {
+        padding: 10px 22px; border: 1px solid var(--gold);
+        border-radius: 999px; color: var(--gold);
+        font-size: 14px; font-weight: 600; transition: all 0.25s ease;
+      }
+      .nav-cta:hover { background: var(--gold); color: var(--bg); }
+      .burger {
+        display: none; flex-direction: column; gap: 5px;
+        background: none; border: none; cursor: pointer; padding: 6px;
+      }
+      .burger span {
+        width: 24px; height: 2px; background: var(--white);
+        transition: all 0.3s ease;
+      }
+      .burger.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+      .burger.active span:nth-child(2) { opacity: 0; }
+      .burger.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+      /* Page head */
+      .page-head { padding: 64px 0 40px; }
+      .page-head .tag {
+        font-size: 13px; color: var(--gold); font-weight: 600;
+        text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px;
+        display: block;
+      }
+      .page-head h1 {
+        font-size: clamp(32px, 5vw, 48px);
+        font-weight: 800; letter-spacing: -1px; margin-bottom: 14px;
+      }
+      .page-head p {
+        color: var(--muted); font-size: 17px; max-width: 560px;
+      }
+
+      /* Calc layout */
+      .calc-layout {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 28px;
+        margin-bottom: 60px;
+      }
+
+      /* Form card */
+      .form-card {
+        background: var(--bg-3);
+        border: 1px solid var(--line-2);
+        border-radius: var(--radius);
+        padding: 32px;
+      }
+      .form-card h2 {
+        font-size: 22px; margin-bottom: 24px;
+      }
+      .field { margin-bottom: 22px; }
+      .field label {
+        display: block; font-size: 13px; color: var(--muted-2);
+        font-weight: 600; text-transform: uppercase;
+        letter-spacing: 0.6px; margin-bottom: 8px;
+      }
+      .field input, .field select {
+        width: 100%;
+        background: var(--bg-2);
+        border: 1px solid var(--line-2);
+        border-radius: 10px;
+        padding: 14px 16px;
+        color: var(--white);
+        font-size: 16px;
+        font-family: inherit;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        outline: none;
+      }
+      .field input:focus, .field select:focus {
+        border-color: var(--gold);
+        box-shadow: 0 0 0 3px var(--gold-soft);
+      }
+      .field select {
+        cursor: pointer; appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23C9A96E' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 16px center;
+        padding-right: 38px;
+      }
+      .calc-btn {
+        width: 100%;
+        padding: 16px;
+        background: var(--gold);
+        color: var(--bg);
+        border: none;
+        border-radius: 12px;
+        font-family: "Montserrat", sans-serif;
+        font-weight: 700;
+        font-size: 16px;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        margin-top: 8px;
+      }
+      .calc-btn:hover {
+        background: var(--gold-2);
+        transform: translateY(-1px);
+        box-shadow: 0 10px 24px rgba(201, 169, 110, 0.3);
+      }
+
+      /* Result card */
+      .result-card {
+        background: var(--bg-3);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        padding: 32px;
+        display: flex;
+        flex-direction: column;
+      }
+      .result-card h2 {
+        font-size: 22px; margin-bottom: 24px;
+      }
+      .result-empty {
+        flex: 1;
+        display: grid; place-items: center;
+        text-align: center; color: var(--muted-2);
+        font-size: 15px; padding: 40px 20px;
+      }
+      .result-empty .icon {
+        font-size: 48px; margin-bottom: 16px; opacity: 0.4;
+      }
+      .result-rows {
+        display: flex; flex-direction: column; gap: 14px;
+      }
+      .res-row {
+        display: flex; justify-content: space-between; align-items: center;
+        padding: 16px 18px;
+        background: var(--bg-2);
+        border: 1px solid var(--line-2);
+        border-radius: 12px;
+      }
+      .res-row .lbl {
+        font-size: 14px; color: var(--muted);
+      }
+      .res-row .val {
+        font-family: "Montserrat", sans-serif;
+        font-size: 20px; font-weight: 700;
+      }
+      .res-row.highlight {
+        border-color: var(--line);
+        background: var(--gold-soft);
+      }
+      .res-row.highlight .val { color: var(--gold); }
+      .res-row.profit .val { color: var(--green); }
+      .res-row.profit {
+        border-color: rgba(76, 175, 122, 0.3);
+      }
+      .res-row .val .unit {
+        font-size: 14px; color: var(--muted); font-weight: 500;
+      }
+
+      /* Footer */
+      .footer {
+        border-top: 1px solid var(--line-2);
+        padding: 48px 0 36px; margin-top: 40px;
+      }
+      .footer-inner {
+        display: flex; justify-content: space-between; align-items: center;
+        flex-wrap: wrap; gap: 20px;
+      }
+      .footer .copy { color: var(--muted-2); font-size: 14px; }
+      .footer-links { display: flex; gap: 28px; list-style: none; flex-wrap: wrap; }
+      .footer-links a {
+        color: var(--muted); font-size: 14px; transition: color 0.2s ease;
+      }
+      .footer-links a:hover { color: var(--gold); }
+
+      @media (max-width: 820px) {
+        .calc-layout { grid-template-columns: 1fr; }
+      }
+      @media (max-width: 760px) {
+        .menu {
+          position: fixed; top: 72px; left: 0; right: 0;
+          background: var(--bg-2);
+          border-bottom: 1px solid var(--line);
+          flex-direction: column; align-items: flex-start;
+          padding: 24px; gap: 18px;
+          transform: translateY(-130%); transition: transform 0.35s ease;
+        }
+        .menu.open { transform: translateY(0); }
+        .burger { display: flex; }
+        .nav-cta { display: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <div class="container nav">
+        <a href="index.html" class="logo">
+          <span class="logo-icon">◎</span>
+          Колесо <span>Прибыли</span>
+        </a>
+        <ul class="menu" id="menu">
+          <li><a href="index.html">Главная</a></li>
+          <li><a href="index.html#catalog">Каталог</a></li>
+          <li><a href="calc.html" class="active">Калькулятор</a></li>
+          <li><a href="ai.html">ИИ-консультант</a></li>
+        </ul>
+        <a href="#" class="nav-cta">Войти</a>
+        <button class="burger" id="burger" aria-label="Меню">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </header>
+
+    <div class="container">
+      <div class="page-head">
+        <span class="tag">Инструмент</span>
+        <h1>Калькулятор прибыли</h1>
+        <p>Рассчитай чистую прибыль и срок продажи авто перед покупкой. Учти цену, вложения и город продажи.</p>
+      </div>
+
+      <div class="calc-layout">
+        <!-- Form -->
+        <div class="form-card">
+          <h2>Параметры сделки</h2>
+          <form id="calcForm">
+            <div class="field">
+              <label for="carBrand">Марка авто</label>
+              <input id="carBrand" type="text" placeholder="Toyota" />
+            </div>
+            <div class="field">
+              <label for="carModel">Модель авто</label>
+              <input id="carModel" type="text" placeholder="Camry" />
+            </div>
+            <div class="field">
+              <label for="carYear">Год выпуска</label>
+              <input id="carYear" type="number" placeholder="2019" min="1980" max="2026" />
+            </div>
+            <div class="field">
+              <label for="buyPrice">Цена покупки, ₽</label>
+              <input id="buyPrice" type="number" placeholder="2 150 000" min="0" />
+            </div>
+            <div class="field">
+              <label for="invest">Вложения: мойка, химчистка, косметика, ₽</label>
+              <input id="invest" type="number" placeholder="30 000" min="0" />
+            </div>
+            <div class="field">
+              <label for="city">Город</label>
+              <input id="city" type="text" placeholder="Москва" />
+            </div>
+            <div class="field">
+              <label for="mileage">Пробег, км</label>
+              <input id="mileage" type="number" placeholder="120 000" min="0" />
+            </div>
+            <div class="field">
+              <label for="gearbox">Тип КПП</label>
+              <select id="gearbox">
+                <option value="mkpp">МКПП</option>
+                <option value="akpp">АКПП</option>
+                <option value="cvt">CVT</option>
+                <option value="robot">Робот</option>
+              </select>
+            </div>
+            <button class="calc-btn" type="submit">Рассчитать</button>
+          </form>
+        </div>
+
+        <!-- Result -->
+        <div class="result-card">
+          <h2>Результат</h2>
+          <div id="resultArea">
+            <div class="result-empty">
+              <div>
+                <div class="icon">◎</div>
+                Заполни параметры и нажми «Рассчитать»
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <div class="container footer-inner">
+        <a href="index.html" class="logo">
+          <span class="logo-icon">◎</span>
+          Колесо <span>Прибыли</span>
+        </a>
+        <ul class="footer-links">
+          <li><a href="index.html">Главная</a></li>
+          <li><a href="index.html#catalog">Каталог</a></li>
+          <li><a href="calc.html">Калькулятор</a></li>
+          <li><a href="ai.html">ИИ-консультант</a></li>
+          <li><a href="#">О сервисе</a></li>
+          <li><a href="#">Контакты</a></li>
+        </ul>
+        <div class="copy">К◎лесо Прибыли © 2026</div>
+      </div>
+    </footer>
+
+    <script type="module">
+      const form = document.getElementById('calcForm')
+      const resultArea = document.getElementById('resultArea')
+      const fmt = (n) => Math.round(n).toLocaleString('ru-RU') + ' ₽'
+
+      const CITY_FACTORS = {
+        'москва': 1.0, 'москова': 1.0,
+        'санкт-петербург': 0.96, 'спб': 0.96, 'питер': 0.96,
+        'екатеринбург': 0.92, 'новосибирск': 0.90, 'казань': 0.88,
+        'краснодар': 0.85, 'нижний новгород': 0.87, 'самара': 0.86,
+      }
+
+      form.addEventListener('submit', (e) => {
+        e.preventDefault()
+        const buy = Number(document.getElementById('buyPrice').value) || 0
+        const invest = Number(document.getElementById('invest').value) || 0
+        const mileage = Number(document.getElementById('mileage').value) || 0
+        const cityRaw = (document.getElementById('city').value || '').trim().toLowerCase()
+        const year = Number(document.getElementById('carYear').value) || 0
+        const gearbox = document.getElementById('gearbox').value
+
+        if (buy <= 0) {
+          resultArea.innerHTML = `<div class="result-empty"><div><div class="icon">⚠</div>Укажи цену покупки</div></div>`
+          return
+        }
+
+        const cityK = CITY_FACTORS[cityRaw] || 0.82
+
+        // Market price model: base markup adjusted by year, mileage, gearbox
+        const ageFactor = year ? Math.max(0.82, 1 - (2026 - year) * 0.012) : 1
+        const mileageFactor = mileage > 0 ? Math.max(0.85, 1 - mileage / 500_000) : 1
+        const gearFactor = { mkpp: 0.97, akpp: 1.0, cvt: 0.98, robot: 0.99 }[gearbox] || 1
+
+        const market = buy * 1.14 * cityK * ageFactor * mileageFactor * gearFactor
+        const profit = market - buy - invest
+        const margin = (profit / buy * 100)
+        const days = profit > 0 ? Math.round(5 + (1 - Math.min(margin / 20, 1)) * 20) : 0
+
+        resultArea.innerHTML = `
+          <div class="result-rows">
+            <div class="res-row highlight">
+              <span class="lbl">Рыночная цена</span>
+              <span class="val">${fmt(market)}</span>
+            </div>
+            <div class="res-row">
+              <span class="lbl">Цена покупки</span>
+              <span class="val">${fmt(buy)}</span>
+            </div>
+            <div class="res-row">
+              <span class="lbl">Вложения</span>
+              <span class="val">${fmt(invest)}</span>
+            </div>
+            <div class="res-row profit">
+              <span class="lbl">Чистая прибыль</span>
+              <span class="val">${fmt(profit)}</span>
+            </div>
+            <div class="res-row">
+              <span class="lbl">Срок продажи</span>
+              <span class="val">${days} <span class="unit">дн.</span></span>
+            </div>
+          </div>
+        `
+      })
+
+      // Burger
+      const burger = document.getElementById('burger')
+      const menu = document.getElementById('menu')
+      burger.addEventListener('click', () => {
+        burger.classList.toggle('active')
+        menu.classList.toggle('open')
+      })
+      menu.querySelectorAll('a').forEach(a =>
+        a.addEventListener('click', () => {
+          burger.classList.remove('active')
+          menu.classList.remove('open')
+        })
+      )
+    </script>
+  </body>
+</html>

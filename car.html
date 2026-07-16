@@ -1,0 +1,686 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Toyota Camry 2021 — Анализ · Колесо Прибыли</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #0D1F1C;
+        --bg-2: #0A1715;
+        --bg-3: #122724;
+        --gold: #C9A96E;
+        --gold-2: #B8975A;
+        --gold-soft: rgba(201, 169, 110, 0.12);
+        --white: #F7F5F0;
+        --muted: #8FA3A0;
+        --muted-2: #5E7370;
+        --line: rgba(201, 169, 110, 0.18);
+        --line-2: rgba(255, 255, 255, 0.06);
+        --green: #4CAF7A;
+        --green-2: #2E8B57;
+        --shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+        --radius: 16px;
+        --max: 1080px;
+      }
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      html { scroll-behavior: smooth; }
+      body {
+        font-family: "Inter", system-ui, sans-serif;
+        background: var(--bg);
+        color: var(--white);
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+        overflow-x: hidden;
+      }
+      h1, h2, h3, h4 {
+        font-family: "Montserrat", sans-serif;
+        line-height: 1.2;
+        font-weight: 700;
+      }
+      a { color: inherit; text-decoration: none; }
+      .container { max-width: var(--max); margin: 0 auto; padding: 0 24px; }
+
+      /* Header */
+      .header {
+        position: sticky; top: 0; z-index: 100;
+        background: rgba(13, 31, 28, 0.72);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border-bottom: 1px solid var(--line-2);
+      }
+      .nav {
+        display: flex; align-items: center; justify-content: space-between;
+        height: 72px;
+      }
+      .logo {
+        display: flex; align-items: center; gap: 10px;
+        font-family: "Montserrat", sans-serif;
+        font-weight: 800; font-size: 18px;
+      }
+      .logo-icon {
+        font-size: 30px; color: var(--gold); line-height: 1;
+        display: inline-block; transform: translateY(-2px);
+      }
+      .logo span { color: var(--gold); }
+      .menu { display: flex; align-items: center; gap: 36px; list-style: none; }
+      .menu a {
+        font-size: 15px; font-weight: 500; color: var(--muted);
+        transition: color 0.2s ease; position: relative;
+      }
+      .menu a:hover { color: var(--white); }
+      .menu a::after {
+        content: ""; position: absolute; left: 0; bottom: -6px;
+        width: 0; height: 1px; background: var(--gold);
+        transition: width 0.25s ease;
+      }
+      .menu a:hover::after { width: 100%; }
+      .nav-cta {
+        padding: 10px 22px; border: 1px solid var(--gold);
+        border-radius: 999px; color: var(--gold);
+        font-size: 14px; font-weight: 600; transition: all 0.25s ease;
+      }
+      .nav-cta:hover { background: var(--gold); color: var(--bg); }
+      .burger {
+        display: none; flex-direction: column; gap: 5px;
+        background: none; border: none; cursor: pointer; padding: 6px;
+      }
+      .burger span {
+        width: 24px; height: 2px; background: var(--white);
+        transition: all 0.3s ease;
+      }
+      .burger.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+      .burger.active span:nth-child(2) { opacity: 0; }
+      .burger.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+      /* Back link */
+      .back-link {
+        display: inline-flex; align-items: center; gap: 8px;
+        color: var(--muted); font-size: 14px; font-weight: 500;
+        margin: 36px 0 24px; transition: color 0.2s ease;
+      }
+      .back-link:hover { color: var(--gold); }
+
+      /* Layout */
+      .car-layout {
+        display: grid;
+        grid-template-columns: 1.4fr 1fr;
+        gap: 28px;
+        margin-bottom: 60px;
+      }
+      .card-box {
+        background: var(--bg-3);
+        border: 1px solid var(--line-2);
+        border-radius: var(--radius);
+        padding: 28px;
+      }
+
+      /* Photo */
+      .car-photo {
+        height: 360px;
+        border-radius: var(--radius);
+        position: relative;
+        overflow: hidden;
+        border: 1px solid var(--line-2);
+      }
+      .car-photo .ph {
+        width: 100%; height: 100%;
+        background: linear-gradient(135deg, #1a3a34, #0D1F1C 60%, #2a4a3e);
+        position: relative;
+      }
+      .car-photo .ph::after {
+        content: ""; position: absolute; inset: 0;
+        background: radial-gradient(circle at 30% 30%, rgba(201, 169, 110, 0.2), transparent 55%);
+      }
+      .car-photo .glyph {
+        position: absolute; inset: 0; display: grid; place-items: center;
+        font-size: 120px; color: rgba(201, 169, 110, 0.25);
+      }
+
+      /* Title block */
+      .car-title-block { margin-top: 24px; }
+      .car-title-block h1 {
+        font-size: 30px; font-weight: 800; letter-spacing: -0.5px;
+        margin-bottom: 8px;
+      }
+      .car-price-row {
+        display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap;
+      }
+      .car-price-row .now {
+        font-family: "Montserrat", sans-serif;
+        font-size: 28px; font-weight: 700; color: var(--gold);
+      }
+      .car-price-row .market {
+        font-size: 16px; color: var(--muted-2); text-decoration: line-through;
+      }
+
+      /* PI big */
+      .pi-big {
+        background: var(--bg-3);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        padding: 28px;
+        text-align: center;
+      }
+      .pi-big .label {
+        font-size: 13px; color: var(--muted); text-transform: uppercase;
+        letter-spacing: 0.8px; font-weight: 600; margin-bottom: 12px;
+      }
+      .pi-big .score {
+        font-family: "Montserrat", sans-serif;
+        font-size: 64px; font-weight: 800; color: var(--green);
+        line-height: 1;
+      }
+      .pi-big .score small {
+        font-size: 24px; color: var(--muted); font-weight: 600;
+      }
+      .pi-bar-big {
+        height: 8px; background: var(--bg-2);
+        border-radius: 999px; overflow: hidden;
+        margin: 18px 0 8px;
+      }
+      .pi-fill-big {
+        height: 100%;
+        background: linear-gradient(90deg, var(--green-2), var(--green));
+        border-radius: 999px;
+        transition: width 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+      .pi-big .hint { font-size: 13px; color: var(--muted); }
+
+      /* Stats grid */
+      .stats-grid {
+        display: grid; grid-template-columns: 1fr 1fr;
+        gap: 14px; margin-top: 28px;
+      }
+      .stat-item {
+        background: var(--bg-3);
+        border: 1px solid var(--line-2);
+        border-radius: 12px;
+        padding: 18px 20px;
+      }
+      .stat-item .lbl {
+        font-size: 12px; color: var(--muted-2);
+        text-transform: uppercase; letter-spacing: 0.6px;
+        font-weight: 600; margin-bottom: 6px;
+      }
+      .stat-item .val {
+        font-family: "Montserrat", sans-serif;
+        font-size: 20px; font-weight: 700;
+      }
+      .stat-item .val.green { color: var(--green); }
+      .stat-item .val.gold  { color: var(--gold); }
+      .stat-item .sub {
+        font-size: 12px; color: var(--muted); margin-top: 2px;
+      }
+
+      /* Section heading */
+      .sec-head {
+        font-size: 20px; margin-bottom: 16px;
+      }
+      .sec-block { margin-bottom: 40px; }
+
+      /* Market vs price */
+      .market-box {
+        background: var(--bg-3);
+        border: 1px solid var(--line-2);
+        border-radius: var(--radius);
+        padding: 24px;
+        font-size: 16px;
+      }
+      .market-box .strong {
+        color: var(--green); font-weight: 700;
+      }
+
+      /* Profit breakdown */
+      .breakdown {
+        background: var(--bg-3);
+        border: 1px solid var(--line-2);
+        border-radius: var(--radius);
+        padding: 24px;
+      }
+      .bd-row {
+        display: flex; justify-content: space-between; align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px solid var(--line-2);
+        font-size: 15px;
+      }
+      .bd-row:last-child { border-bottom: none; }
+      .bd-row .name { color: var(--muted); }
+      .bd-row .num { font-family: "Montserrat", sans-serif; font-weight: 600; }
+      .bd-row.total {
+        padding-top: 18px; margin-top: 6px;
+        border-top: 1px solid var(--line);
+        border-bottom: none;
+      }
+      .bd-row.total .name {
+        color: var(--white); font-weight: 600; font-size: 16px;
+      }
+      .bd-row.total .num {
+        color: var(--green); font-size: 22px; font-weight: 800;
+      }
+
+      /* Liquidity */
+      .liq-box {
+        background: var(--bg-3);
+        border: 1px solid var(--line-2);
+        border-radius: var(--radius);
+        padding: 24px;
+        display: flex; align-items: center; gap: 16px;
+      }
+      .liq-icon {
+        font-size: 36px;
+      }
+      .liq-text .t {
+        font-family: "Montserrat", sans-serif;
+        font-size: 20px; font-weight: 700;
+      }
+      .liq-text .d {
+        font-size: 14px; color: var(--muted);
+      }
+
+      /* AI photo analysis */
+      .ai-box {
+        background: var(--bg-3);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        padding: 24px;
+        position: relative;
+      }
+      .ai-box::before {
+        content: "ИИ";
+        position: absolute; top: 18px; right: 22px;
+        font-size: 11px; font-weight: 700; color: var(--gold);
+        background: var(--gold-soft); padding: 4px 10px;
+        border-radius: 999px; letter-spacing: 0.5px;
+      }
+      .ai-box .ai-title {
+        font-family: "Montserrat", sans-serif;
+        font-size: 17px; font-weight: 600; margin-bottom: 10px;
+      }
+      .ai-box p {
+        color: var(--muted); font-size: 15px;
+      }
+      .ai-box p .hl { color: var(--white); }
+
+      /* VIN */
+      .vin-box {
+        background: var(--bg-3);
+        border: 1px solid var(--line-2);
+        border-radius: var(--radius);
+        padding: 24px;
+        display: flex; align-items: center; justify-content: space-between;
+        gap: 20px; flex-wrap: wrap;
+      }
+      .vin-box .info .t {
+        font-family: "Montserrat", sans-serif;
+        font-size: 17px; font-weight: 600; margin-bottom: 4px;
+      }
+      .vin-box .info .d { color: var(--muted); font-size: 14px; }
+      .vin-btn {
+        padding: 12px 24px;
+        background: transparent;
+        border: 1px solid var(--gold);
+        border-radius: 10px;
+        color: var(--gold);
+        font-family: inherit; font-weight: 600; font-size: 14px;
+        cursor: pointer; transition: all 0.25s ease;
+      }
+      .vin-btn:hover {
+        background: var(--gold); color: var(--bg);
+      }
+
+      /* Actions */
+      .actions {
+        display: flex; gap: 14px; margin-top: 48px; flex-wrap: wrap;
+      }
+      .btn-primary {
+        padding: 16px 32px;
+        background: var(--gold); color: var(--bg);
+        border: none; border-radius: 12px;
+        font-family: "Montserrat", sans-serif;
+        font-weight: 700; font-size: 16px;
+        cursor: pointer; transition: all 0.25s ease;
+      }
+      .btn-primary:hover {
+        background: var(--gold-2);
+        transform: translateY(-1px);
+        box-shadow: 0 10px 24px rgba(201, 169, 110, 0.3);
+      }
+      .btn-ghost {
+        padding: 16px 32px;
+        background: transparent;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        color: var(--white);
+        font-family: "Montserrat", sans-serif;
+        font-weight: 600; font-size: 16px;
+        cursor: pointer; transition: all 0.25s ease;
+      }
+      .btn-ghost:hover { border-color: var(--gold); color: var(--gold); }
+
+      /* Specs table */
+      .specs {
+        background: var(--bg-3);
+        border: 1px solid var(--line-2);
+        border-radius: var(--radius);
+        padding: 8px 24px;
+      }
+      .spec-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 14px 0;
+        border-bottom: 1px solid var(--line-2);
+        font-size: 15px;
+      }
+      .spec-row:last-child { border-bottom: none; }
+      .spec-lbl { color: var(--muted); }
+      .spec-val {
+        font-weight: 600;
+        color: var(--white);
+        text-align: right;
+      }
+      .vin-input-wrap { display: flex; justify-content: flex-end; }
+      .vin-input {
+        background: var(--bg-2);
+        border: 1px solid var(--line-2);
+        border-radius: 8px;
+        padding: 8px 12px;
+        color: var(--white);
+        font-family: "Montserrat", monospace;
+        font-size: 14px;
+        letter-spacing: 1px;
+        width: 180px;
+        outline: none;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      }
+      .vin-input:focus {
+        border-color: var(--gold);
+        box-shadow: 0 0 0 3px var(--gold-soft);
+      }
+
+      /* Footer */
+      .footer {
+        border-top: 1px solid var(--line-2);
+        padding: 48px 0 36px; margin-top: 60px;
+      }
+      .footer-inner {
+        display: flex; justify-content: space-between; align-items: center;
+        flex-wrap: wrap; gap: 20px;
+      }
+      .footer .copy { color: var(--muted-2); font-size: 14px; }
+      .footer-links { display: flex; gap: 28px; list-style: none; flex-wrap: wrap; }
+      .footer-links a {
+        color: var(--muted); font-size: 14px; transition: color 0.2s ease;
+      }
+      .footer-links a:hover { color: var(--gold); }
+
+      @media (max-width: 860px) {
+        .car-layout { grid-template-columns: 1fr; }
+        .stats-grid { grid-template-columns: 1fr 1fr; }
+      }
+      @media (max-width: 760px) {
+        .menu {
+          position: fixed; top: 72px; left: 0; right: 0;
+          background: var(--bg-2);
+          border-bottom: 1px solid var(--line);
+          flex-direction: column; align-items: flex-start;
+          padding: 24px; gap: 18px;
+          transform: translateY(-130%); transition: transform 0.35s ease;
+        }
+        .menu.open { transform: translateY(0); }
+        .burger { display: flex; }
+        .nav-cta { display: none; }
+      }
+      @media (max-width: 520px) {
+        .stats-grid { grid-template-columns: 1fr; }
+        .car-photo { height: 240px; }
+        .pi-big .score { font-size: 52px; }
+        .actions { flex-direction: column; }
+        .actions .btn-primary, .actions .btn-ghost { width: 100%; text-align: center; }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <div class="container nav">
+        <a href="index.html" class="logo">
+          <span class="logo-icon">◎</span>
+          Колесо <span>Прибыли</span>
+        </a>
+        <ul class="menu" id="menu">
+          <li><a href="index.html">Главная</a></li>
+          <li><a href="index.html#catalog">Каталог</a></li>
+          <li><a href="calc.html">Калькулятор</a></li>
+          <li><a href="ai.html">ИИ-консультант</a></li>
+        </ul>
+        <a href="#" class="nav-cta">Войти</a>
+        <button class="burger" id="burger" aria-label="Меню">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </header>
+
+    <div class="container">
+      <a href="index.html" class="back-link">← Назад к списку</a>
+
+      <div class="car-layout">
+        <!-- Left: photo + title -->
+        <div>
+          <div class="car-photo">
+            <div class="ph"></div>
+            <div class="glyph">⌖</div>
+          </div>
+          <div class="car-title-block">
+            <h1>Toyota Camry, 2021</h1>
+            <div class="car-price-row">
+              <span class="now">2 150 000 ₽</span>
+              <span class="market">2 450 000 ₽</span>
+            </div>
+          </div>
+
+          <div class="sec-block" style="margin-top: 36px;">
+            <h3 class="sec-head">ИИ-анализ фото</h3>
+            <div class="ai-box">
+              <div class="ai-title">ИИ-анализ фото</div>
+              <p>
+                ИИ проверил фото: <span class="hl">сколов не обнаружено</span>,
+                <span class="hl">ЛКП родное</span>,
+                передний бампер — <span class="hl">подозрение на перекрас</span>.
+                Салон в хорошем состоянии, износ руля минимальный.
+              </p>
+            </div>
+          </div>
+
+          <div class="sec-block">
+            <h3 class="sec-head">VIN-проверка</h3>
+            <div class="vin-box">
+              <div class="info">
+                <div class="t">Проверка истории по VIN</div>
+                <div class="d">ДТП, залоги, ограничения, пробег, количество владельцев.</div>
+              </div>
+              <button class="vin-btn" id="vinBtn">Проверить VIN</button>
+            </div>
+          </div>
+
+          <div class="sec-block">
+            <h3 class="sec-head">Характеристики</h3>
+            <div class="specs">
+              <div class="spec-row">
+                <span class="spec-lbl">Марка</span>
+                <span class="spec-val">Toyota</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-lbl">Модель</span>
+                <span class="spec-val">Camry</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-lbl">Год</span>
+                <span class="spec-val">2019</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-lbl">Поколение</span>
+                <span class="spec-val">XV70 (рестайлинг)</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-lbl">Двигатель</span>
+                <span class="spec-val">Бензин, 2.5 л, 200 л.с.</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-lbl">КПП</span>
+                <span class="spec-val">АКПП (6-ст.)</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-lbl">Привод</span>
+                <span class="spec-val">Передний</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-lbl">Пробег</span>
+                <span class="spec-val">98 000 км</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-lbl">Цвет</span>
+                <span class="spec-val">Чёрный металлик</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-lbl">VIN</span>
+                <span class="spec-val vin-input-wrap">
+                  <input type="text" id="vinInput" class="vin-input" placeholder="JTDBR32KXXXXXX" value="JTDBR32K90J123456" />
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: PI + stats -->
+        <div>
+          <div class="pi-big">
+            <div class="label">Индекс выгодности</div>
+            <div class="score">92<small>/100</small></div>
+            <div class="pi-bar-big"><div class="pi-fill-big" id="piFill" style="width:0"></div></div>
+            <div class="hint">Очень высокая выгода для перепродажи</div>
+          </div>
+
+          <div class="stats-grid">
+            <div class="stat-item">
+              <div class="lbl">Цена vs рынок</div>
+              <div class="val green">−12%</div>
+              <div class="sub">экономия 140 000 ₽</div>
+            </div>
+            <div class="stat-item">
+              <div class="lbl">Вложения</div>
+              <div class="val gold">~30 000 ₽</div>
+              <div class="sub">предпродажка</div>
+            </div>
+            <div class="stat-item">
+              <div class="lbl">После предпродажки</div>
+              <div class="val green">+150 000 ₽</div>
+              <div class="sub">рыночная цена</div>
+            </div>
+            <div class="stat-item">
+              <div class="lbl">Чистая прибыль</div>
+              <div class="val green">~120 000 ₽</div>
+              <div class="sub">после всех расходов</div>
+            </div>
+          </div>
+
+          <div class="sec-block" style="margin-top: 28px;">
+            <h3 class="sec-head">Ликвидность</h3>
+            <div class="liq-box">
+              <div class="liq-icon">⚡</div>
+              <div class="liq-text">
+                <div class="t">Улетает</div>
+                <div class="d">Ожидаемый срок продажи: 5–7 дней</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Profit breakdown -->
+      <div class="sec-block">
+        <h3 class="sec-head">Финансовая модель</h3>
+        <div class="breakdown">
+          <div class="bd-row">
+            <span class="name">Цена покупки</span>
+            <span class="num">2 150 000 ₽</span>
+          </div>
+          <div class="bd-row">
+            <span class="name">Вложения на предпродажку</span>
+            <span class="num">~30 000 ₽</span>
+          </div>
+          <div class="bd-row">
+            <span class="name">Рыночная цена после предпродажки</span>
+            <span class="num">2 300 000 ₽</span>
+          </div>
+          <div class="bd-row total">
+            <span class="name">Чистая прибыль</span>
+            <span class="num">~120 000 ₽</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn-primary">Смотреть объявление</button>
+        <a href="index.html" class="btn-ghost">Назад к списку</a>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <div class="container footer-inner">
+        <a href="index.html" class="logo">
+          <span class="logo-icon">◎</span>
+          Колесо <span>Прибыли</span>
+        </a>
+        <ul class="footer-links">
+          <li><a href="index.html">Главная</a></li>
+          <li><a href="index.html#catalog">Каталог</a></li>
+          <li><a href="calc.html">Калькулятор</a></li>
+          <li><a href="ai.html">ИИ-консультант</a></li>
+          <li><a href="#">О сервисе</a></li>
+          <li><a href="#">Контакты</a></li>
+        </ul>
+        <div class="copy">К◎лесо Прибыли © 2026</div>
+      </div>
+    </footer>
+
+    <script type="module">
+      // Animate PI bar
+      requestAnimationFrame(() => {
+        const fill = document.getElementById('piFill')
+        if (fill) fill.style.width = '92%'
+      })
+
+      // VIN button stub
+      const vinBtn = document.getElementById('vinBtn')
+      vinBtn.addEventListener('click', () => {
+        vinBtn.textContent = 'Проверка...'
+        setTimeout(() => {
+          vinBtn.textContent = 'Чисто · без ДТП'
+          vinBtn.style.borderColor = 'var(--green)'
+          vinBtn.style.color = 'var(--green)'
+        }, 1200)
+      })
+
+      // Burger
+      const burger = document.getElementById('burger')
+      const menu = document.getElementById('menu')
+      burger.addEventListener('click', () => {
+        burger.classList.toggle('active')
+        menu.classList.toggle('open')
+      })
+      menu.querySelectorAll('a').forEach(a =>
+        a.addEventListener('click', () => {
+          burger.classList.remove('active')
+          menu.classList.remove('open')
+        })
+      )
+    </script>
+  </body>
+</html>
