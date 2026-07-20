@@ -1057,6 +1057,149 @@
         <div class="copy">К◎лесо Прибыли © 2026</div>
       </div>
     </footer>
+<script>
+// Бургер-меню
+const burger = document.getElementById('burger')
+const menu = document.getElementById('menu')
+burger.addEventListener('click', () => {
+  burger.classList.toggle('active')
+  menu.classList.toggle('open')
+})
+menu.querySelectorAll('a').forEach(a =>
+  a.addEventListener('click', () => {
+    burger.classList.remove('active')
+    menu.classList.remove('open')
+  })
+)
+
+// Карточки авто
+(function() {
+  const cars = [
+    {brand:"Lada",model:"Vesta",year:2022,engine:"1.6 МКПП",price:1350000,below:9,index:78,liquidity:"fly",body:"Седан"},
+    {brand:"Lada",model:"Granta",year:2023,engine:"1.6 МКПП",price:820000,below:9,index:75,liquidity:"fly",body:"Седан"},
+    {brand:"Kia",model:"Rio",year:2020,engine:"1.6 АКПП",price:1180000,below:9,index:72,liquidity:"hot",body:"Седан"},
+    {brand:"Hyundai",model:"Solaris",year:2020,engine:"1.6 АКПП",price:1150000,below:9,index:70,liquidity:"hot",body:"Седан"},
+    {brand:"Volkswagen",model:"Polo",year:2021,engine:"1.4 TSI",price:1480000,below:9,index:68,liquidity:"ok",body:"Седан"},
+    {brand:"Toyota",model:"Camry",year:2019,engine:"2.5 АКПП",price:2180000,below:10,index:85,liquidity:"fly",body:"Седан"},
+    {brand:"Skoda",model:"Octavia",year:2020,engine:"1.4 TSI",price:1680000,below:9,index:71,liquidity:"ok",body:"Седан"},
+    {brand:"Renault",model:"Logan",year:2021,engine:"1.6 МКПП",price:880000,below:8,index:64,liquidity:"ok",body:"Седан"},
+    {brand:"Mazda",model:"CX-5",year:2020,engine:"2.0 АКПП",price:2350000,below:9,index:74,liquidity:"hot",body:"Кроссовер"},
+    {brand:"Nissan",model:"Qashqai",year:2019,engine:"2.0 CVT",price:1780000,below:9,index:67,liquidity:"ok",body:"Кроссовер"},
+    {brand:"Toyota",model:"RAV4",year:2019,engine:"2.0 CVT",price:2480000,below:9,index:82,liquidity:"fly",body:"Кроссовер"},
+    {brand:"Chery",model:"Tiggo 7 Pro",year:2023,engine:"1.5 CVT",price:1980000,below:8,index:58,liquidity:"slow",body:"Кроссовер"},
+    {brand:"Geely",model:"Coolray",year:2023,engine:"1.5 DCT",price:2150000,below:7,index:66,liquidity:"ok",body:"Кроссовер"},
+    {brand:"Haval",model:"Jolion",year:2023,engine:"1.5 DCT",price:1980000,below:9,index:72,liquidity:"hot",body:"Кроссовер"},
+    {brand:"Omoda",model:"C5",year:2024,engine:"1.5 CVT",price:2280000,below:7,index:61,liquidity:"ok",body:"Кроссовер"},
+    {brand:"Changan",model:"CS35 Plus",year:2023,engine:"1.4 DCT",price:1780000,below:7,index:57,liquidity:"slow",body:"Кроссовер"},
+    {brand:"Kia",model:"Seltos",year:2021,engine:"1.6 АКПП",price:1780000,below:9,index:70,liquidity:"ok",body:"Кроссовер"},
+    {brand:"Hyundai",model:"Creta",year:2021,engine:"1.6 АКПП",price:1680000,below:9,index:76,liquidity:"fly",body:"Кроссовер"},
+    {brand:"Toyota",model:"Corolla",year:2019,engine:"1.6 CVT",price:1680000,below:9,index:80,liquidity:"fly",body:"Седан"},
+    {brand:"Mitsubishi",model:"Outlander",year:2018,engine:"2.0 CVT",price:1880000,below:8,index:65,liquidity:"ok",body:"Внедорожник"},
+  ];
+
+  const liqLabels = { fly:"⚡ Улетает", hot:"🔥 Ликвид", ok:"✅ Нормально", slow:"🐌 Тяжело" };
+  const liqClass = { fly:"l-fly", hot:"l-hot", ok:"l-ok", slow:"l-slow" };
+  const ITEMS_PER_PAGE = 6;
+  let currentPage = 1;
+  let filtered = [...cars];
+
+  function renderGrid(page) {
+    const grid = document.getElementById("grid");
+    if (!grid) return;
+    const start = (page-1)*ITEMS_PER_PAGE;
+    const slice = filtered.slice(start, start+ITEMS_PER_PAGE);
+    grid.innerHTML = slice.map(c => `
+      <a class="card" href="car.html?brand=${c.brand}&model=${c.model}&year=${c.year}&engine=${c.engine}&price=${c.price}&below=${c.below}&index=${c.index}&liquidity=${c.liquidity}">
+        <div class="card-photo">
+          <div class="ph"><div class="car-glyph">🚗</div></div>
+          <span class="badge-below">-${c.below}% рынка</span>
+          <span class="badge-liquidity ${liqClass[c.liquidity]}">${liqLabels[c.liquidity]}</span>
+        </div>
+        <div class="card-body">
+          <div class="card-title">${c.brand} ${c.model}</div>
+          <div class="card-engine">${c.year}, ${c.engine}</div>
+          <div class="card-price">
+            <span class="now">${c.price.toLocaleString()} ₽</span>
+          </div>
+          <div class="profit-index">
+            <div class="pi-head"><span>Индекс выгодности</span><span class="val">${c.index}/100</span></div>
+            <div class="pi-bar"><div class="pi-fill" style="width:${c.index}%"></div></div>
+          </div>
+          <button class="card-btn">Смотреть анализ</button>
+        </div>
+      </a>
+    `).join("");
+
+    renderPagination();
+  }
+
+  function renderPagination() {
+    const pg = document.getElementById("pagination");
+    if (!pg) return;
+    const total = Math.ceil(filtered.length/ITEMS_PER_PAGE);
+    if (total<=1) { pg.innerHTML=""; return; }
+    let html = `<button ${currentPage===1?"disabled":""} onclick="window.goPage(${currentPage-1})">←</button>`;
+    for(let i=1;i<=total;i++) {
+      html += `<button class="${i===currentPage?'active':''}" onclick="window.goPage(${i})">${i}</button>`;
+    }
+    html += `<button ${currentPage===total?"disabled":""} onclick="window.goPage(${currentPage+1})">→</button>`;
+    pg.innerHTML = html;
+  }
+
+  window.goPage = function(p) {
+    const total = Math.ceil(filtered.length/ITEMS_PER_PAGE);
+    if (p<1||p>total) return;
+    currentPage = p;
+    renderGrid(p);
+    window.scrollTo({top:document.getElementById("catalog").offsetTop-100,behavior:"smooth"});
+  };
+
+  function applyFilters() {
+    const budgetEl = document.getElementById("f-budget");
+    const brandEl = document.getElementById("f-brand");
+    const modelEl = document.getElementById("f-model");
+    const bodyEl = document.getElementById("f-body");
+    const sortEl = document.getElementById("f-sort");
+    filtered = [...cars];
+    if (budgetEl && budgetEl.value) {
+      const max = parseInt(budgetEl.value.replace(/[^0-9]/g,""));
+      if (max) filtered = filtered.filter(c => c.price <= max);
+    }
+    if (brandEl && brandEl.value) filtered = filtered.filter(c => c.brand === brandEl.value);
+    if (modelEl && modelEl.value) filtered = filtered.filter(c => c.model === modelEl.value);
+    if (bodyEl && bodyEl.value) filtered = filtered.filter(c => c.body === bodyEl.value);
+    if (sortEl && sortEl.value==="profit") filtered.sort((a,b)=>b.index-a.index);
+    else if (sortEl && sortEl.value==="liquidity") {
+      const order = {fly:4,hot:3,ok:2,slow:1};
+      filtered.sort((a,b)=>order[b.liquidity]-order[a.liquidity]);
+    }
+    else if (sortEl && sortEl.value==="margin") filtered.sort((a,b)=>b.below-a.below);
+    currentPage = 1;
+    renderGrid(1);
+  }
+
+  document.getElementById("f-budget")?.addEventListener("change",applyFilters);
+  document.getElementById("f-brand")?.addEventListener("change",function(){
+    applyFilters();
+    updateModelFilter(this.value,"f-model");
+  });
+  document.getElementById("f-model")?.addEventListener("change",applyFilters);
+  document.getElementById("f-body")?.addEventListener("change",applyFilters);
+  document.getElementById("f-sort")?.addEventListener("change",applyFilters);
+  document.getElementById("brand")?.addEventListener("change",function(){
+    updateModelFilter(this.value,"model");
+  });
+
+  function updateModelFilter(brand,targetId) {
+    const sel = document.getElementById(targetId);
+    if (!sel) return;
+    const models = [...new Set(cars.filter(c=>c.brand===brand).map(c=>c.model))];
+    sel.innerHTML = '<option value="">Любая</option>' + models.map(m=>`<option>${m}</option>`).join("");
+  }
+
+  renderGrid(1);
+})();
+</script>
 
   </body>
 </html>
